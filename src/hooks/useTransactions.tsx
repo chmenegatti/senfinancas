@@ -25,6 +25,7 @@ interface TransactionsProviderProps {
 interface TransactionsContextData {
   transactions: Transaction[];
   createTransaction: (transaction: TransactionInput) => Promise<void>;
+  deleteTransaction: (id: number) => Promise<void | undefined>;
 }
 
 export const TransactionsContext = createContext<TransactionsContextData>(
@@ -36,12 +37,12 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
   useEffect(() => {
     api
-      .get('transactions')
+      .get('/')
       .then((response) => setTransactions(response.data.transactions));
   }, []);
 
   async function createTransaction(transactionInput: TransactionInput) {
-    const response = await api.post('/transactions', {
+    const response = await api.post('/', {
       ...transactionInput,
       createdAt: new Date(),
     });
@@ -50,11 +51,20 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     setTransactions([...transactions, transaction]);
   }
 
+  async function deleteTransaction(id: number) {
+    await api.delete(`/${id}`);
+
+    setTransactions(
+      transactions.filter((transaction) => transaction.id !== id)
+    );
+  }
+
   return (
     <TransactionsContext.Provider
       value={{
         transactions,
         createTransaction,
+        deleteTransaction,
       }}
     >
       {children}

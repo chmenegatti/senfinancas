@@ -34,6 +34,23 @@ export const Container = styled.div`
       &.outcome {
         color: var(--red);
       }
+
+      button {
+        background: none;
+        border: 0;
+        padding: 0.25rem;
+        color: var(--dark-blue);
+
+        transition: filter 0.2s;
+
+        &:hover {
+          filter: brightness(0.9);
+        }
+
+        > svg {
+          margin-left: 0.5rem;
+        }
+      }
     }
   }
 `;
